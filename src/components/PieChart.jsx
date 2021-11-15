@@ -10,7 +10,7 @@ const PieChart = () => {
     labels: ['Red', 'Blue'],
     datasets: [
       {
-        label: '# of Votes',
+        label: 'Metorites Fell and Found',
         data: [],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
@@ -26,10 +26,10 @@ const PieChart = () => {
   };
 
   const [displayData, setDisplayData] = useState([]);
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // setIsLoading(true);
+    setIsLoading(true);
     console.log('fetching data...')
     fetch(`https://data.nasa.gov/resource/gh4g-9sfh.json`)
     .then((res) => {
@@ -37,37 +37,43 @@ const PieChart = () => {
     })
     .then(dataRes => {
         let fallData;
+        console.log(dataRes);
         fallData = dataRes.map((item) => item.fall);
         let fallenData = fallData.filter(item => item === 'Fell').length;
         let foundData = fallData.filter(item => item === 'Found').length;
-        setDisplayData([fallenData, foundData])
-        // setIsLoading(false);
+        const categories = [...new Set(dataRes.map((item) => item.fall))];
+        console.log('CATEGORGIES', categories);
+        console.log('DISPLAY DATA', displayData)
+        setDisplayData({data: [fallenData, foundData], categories})
+        setIsLoading(false);
     })
   }, 
 []);
 
+data.datasets[0].data = displayData.data;
+data.labels = displayData.categories;
 
-if(displayData.length === 2){
-  console.log(displayData);
-  data.datasets[0].data = displayData;
+console.log(data);
+
+if(isLoading){
+  console.log('...loading')
+  return <p>loading...</p>
 }
-// if(isLoading) return <p>loading...</p>
 
   return (
     (
       <>
         <div className='header'>
-          <h1 className='title'>Pie Chart</h1>
+          <h1 className='title'>Meteorites Fell and Found</h1>
           <div className='links'>
             <a
               className='btn btn-gh'
               href='https://github.com/reactchartjs/react-chartjs-2/blob/master/example/src/charts/Pie.js'
             >
-              Github Source
             </a>
           </div>
         </div>
-        {/* <Pie data={displayData} /> */}
+        <Pie data={data} />
       </>
     )
   );
