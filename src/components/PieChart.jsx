@@ -1,10 +1,12 @@
 import React from 'react';
 import { Pie } from 'react-chartjs-2';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-
+// Checkboxes to sort by mass for pie chart
 
 const PieChart = () => {
+
+  const ref = useRef();
 
   const data = {
     labels: ['Red', 'Blue'],
@@ -42,8 +44,6 @@ const PieChart = () => {
         let fallenData = fallData.filter(item => item === 'Fell').length;
         let foundData = fallData.filter(item => item === 'Found').length;
         const categories = [...new Set(dataRes.map((item) => item.fall))];
-        console.log('CATEGORGIES', categories);
-        console.log('DISPLAY DATA', displayData)
         setDisplayData({data: [fallenData, foundData], categories})
         setIsLoading(false);
     })
@@ -63,8 +63,9 @@ if(isLoading){
   return (
     (
       <>
+      <div className="graph">
         <div className='header'>
-          <h1 className='title'>Meteorites Fell and Found</h1>
+          <h1 className='title'>🚀 Meteorites Fell and Found Pie Chart</h1>
           <div className='links'>
             <a
               className='btn btn-gh'
@@ -73,7 +74,9 @@ if(isLoading){
             </a>
           </div>
         </div>
-        <Pie data={data} />
+        
+          <Pie data={data} redraw={true} width={20}/>
+        </div>
       </>
     )
   );
